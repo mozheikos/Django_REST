@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from usersapp.views import UserModelViewSet
+from usersapp.views import get_links
 
 router = DefaultRouter()
 router.register("users", UserModelViewSet)
@@ -26,4 +27,5 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('', include(router.urls)),
     path('api/', include(router.urls)),
+    path('api/links/', get_links),
 ]
