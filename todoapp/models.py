@@ -10,7 +10,7 @@ class Project(models.Model):
     users = models.ManyToManyField(User)
 
 
-class TODO(models.Model):
+class ToDo(models.Model):
 
     STATUS_CHOICES = (
         (1, "Active"),
