@@ -1,17 +1,34 @@
-import usersapp.serializers
+from usersapp.models import User
 from .models import Project, ToDo
 from rest_framework import serializers
 
 
 class ProjectModelSerializer(serializers.ModelSerializer):
+    users = serializers.HyperlinkedRelatedField(  # HyperLinkRelatedField for quick transfer to users page
+        view_name="user-detail",
+        many=True,
+        read_only=False,
+        queryset=User.objects.all(),
+    )
 
     class Meta:
         model = Project
-        fields = '__all__'
+        fields = ("title", "url", "users", "repository_link",)
 
 
 class ToDoModelSerializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField(  # It can be HyperLinkRelatedField, but can be not, as designer will say
+        read_only=False,
+        queryset=User.objects.all(),
+        slug_field='username'
+    )
+
+    project = serializers.SlugRelatedField(  # It can be HyperLinkRelatedField, but can be not, as designer will say
+        read_only=False,
+        queryset=Project.objects.all(),
+        slug_field='title'
+    )
 
     class Meta:
         model = ToDo
-        fields = '__all__'
+        fields = ("user", "project", "url", "text", "updated_at", "status")
