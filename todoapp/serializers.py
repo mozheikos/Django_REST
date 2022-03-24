@@ -29,6 +29,8 @@ class ToDoModelSerializer(serializers.ModelSerializer):
         slug_field='title'
     )
 
+    status = serializers.ChoiceField(choices=ToDo.STATUS_CHOICES, )
+
     class Meta:
         model = ToDo
         fields = ("user", "project", "url", "text", "updated_at", "status")

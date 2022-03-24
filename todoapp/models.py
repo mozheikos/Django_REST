@@ -14,9 +14,12 @@ class Project(models.Model):
 
 class ToDo(models.Model):
 
+    A = 'active'
+    C = 'closed'
+
     STATUS_CHOICES = (
-        (1, "Active"),
-        (0, "Closed")
+        (A, "Active"),
+        (C, "Closed")
     )
 
     project = models.ForeignKey(Project, on_delete=CASCADE)
@@ -24,7 +27,7 @@ class ToDo(models.Model):
     text = models.TextField()
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
-    status = models.SmallIntegerField(choices=STATUS_CHOICES, default=1)
+    status = models.CharField(max_length=6, choices=STATUS_CHOICES, default=A)
 
     def __str__(self):
         status = 'active' if self.status else 'closed'

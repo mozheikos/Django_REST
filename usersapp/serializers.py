@@ -1,6 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 from .models import User
 from todoapp.models import Project
+from todoapp.serializers import ToDoModelSerializer
 from rest_framework import serializers
 
 
@@ -17,6 +18,9 @@ class UserModelSerializer(ModelSerializer):
         many=True,
         read_only=True,  # We can't create remark during creating user, it's illogical
     )
+
+    # Commented this option, not sure, what is better
+    # todo_set = ToDoModelSerializer(many=True, read_only=False)
 
     class Meta:
         model = User
