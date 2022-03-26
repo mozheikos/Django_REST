@@ -1,14 +1,15 @@
 from .models import User
-from rest_framework.viewsets import  GenericViewSet
+from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from django.http import JsonResponse
-
 from .serializers import UserModelSerializer
+from rest_framework.pagination import LimitOffsetPagination
 
 
 class UserModelViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     queryset = User.objects.all()
     serializer_class = UserModelSerializer
+    pagination_class = LimitOffsetPagination
 
 
 def get_links(request):
