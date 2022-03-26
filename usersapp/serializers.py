@@ -1,7 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from .models import User
 from todoapp.models import Project
-from todoapp.serializers import ToDoModelSerializer
 from rest_framework import serializers
 
 
