@@ -10,7 +10,10 @@ class Command(BaseCommand):
                                                       first_name='admin', last_name='God')
             superuser.save()
 
-        for i in range(10, number_of_users + 11):
+        start = User.objects.order_by("id").last().id + 3
+        print(start)
+
+        for i in range(start, number_of_users + start + 1):
             user = User.objects.create_user(username=f'user_{i}', email=f'user_{i}@mail.ru', password=f'user_{i}',
                                             first_name=f'some_first_name_{i}', last_name=f'some_last_name_{i}')
             user.save()
