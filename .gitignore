@@ -4,3 +4,4 @@
 ./todoapp/__pycache__/
 ./todo_remarks/__pycache__/
 ./__pycache__/
+db.sqlite3
