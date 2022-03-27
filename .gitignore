@@ -1,7 +1,9 @@
 .idea/
 .vscode/
 ./usersapp/__pycache__/
+./usersapp/migrations/__pycache__/
 ./todoapp/__pycache__/
+./todoapp/migrations/__pycache__/
 ./todo_remarks/__pycache__/
 ./__pycache__/
 db.sqlite3
