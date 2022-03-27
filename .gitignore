@@ -1,1 +1,7 @@
 .idea/
+.vscode/
+./usersapp/__pycache__/
+./todoapp/__pycache__/
+./todo_remarks/__pycache__/
+./__pycache__/
+db.sqlite3
