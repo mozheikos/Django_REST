@@ -19,5 +19,10 @@ class UserModelViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, Gen
 def get_links(request):
     """Пока это находится здесь, в дальнейшем можно будет модернизировать и перенести в какое-то другое приложение,
     где это будет более уместно, также в ответ сервера к каждой ссылке можно будет добавить URL"""
-    links = ['Все пользователи', "Проекты", "TODO-листы"]
+    # links = ['Все пользователи', "Проекты", "TODO-листы"]
+    links = [
+        {"verbose_name": "Все пользователи", "link": "/users"},
+        {"verbose_name": "Проекты", "link": "/projects"},
+        {"verbose_name": "TODO-листы", "link": "/ToDo"},
+    ]
     return JsonResponse({'links': links})

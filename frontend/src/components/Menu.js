@@ -1,9 +1,10 @@
 import React from 'react';
+import {Link} from "react-router-dom";
 
-const MenuLink = ({link}) => {
+const MenuLink = ({link, path}) => {
     return (
         <li>
-            <a href={'#'} className={"menu_link"}>{link}</a>
+            <Link to={path} className={"menu_link"}>{link}</Link>
         </li>
     );
 };
@@ -11,7 +12,7 @@ const MenuLink = ({link}) => {
 const Menu = ({links}) => {
     return (
         <ul className="footer_info container">
-            {links.map((link) => <MenuLink link={link}/>)}
+                {links.map((link) => < MenuLink link={link.verbose_name} path={link.link}/>)}
         </ul>
     );
 };

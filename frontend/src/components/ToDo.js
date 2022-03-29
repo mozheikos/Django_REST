@@ -1,42 +1,41 @@
-import React from 'react';
+import React from "react";
 
-const User = ({user}) => {
+const Remark = ({remark}) => {
     return (
         <tr className="row">
             <td className="column">
-                <span>{user.username}</span>
+                <span>{remark.user}</span>
             </td>
             <td className="column">
-                <span>{user.firstName}</span>
+                <span>{remark.project}</span>
             </td>
             <td className="column">
-                <span>{user.lastName}</span>
+                <span>{remark.text}</span>
             </td>
             <td className="column">
-                <span>{user.email}</span>
+                <span>{remark.status}</span>
             </td>
         </tr>
     );
-};
+}
 
-const UsersList = ({users}) => {
+const Remarks = ({remarks}) => {
     return (
         <table className='inner_table container'>
             <th className="column">
-                <span>Username</span>
+                <span>User</span>
             </th>
             <th className="column">
-                <span>First Name</span>
+                <span>Project</span>
             </th>
             <th className="column">
-                <span>Last Name</span>
+                <span>Text</span>
             </th>
             <th className="column">
-                <span>E-mail address</span>
+                <span>Status</span>
             </th>
-            {users.map((user) => <User user={user}/>)}
+            {remarks.map((remark) => <Remark remark={remark}/>)}
         </table>
     );
-};
-
-export default UsersList;
+}
+export default Remarks;

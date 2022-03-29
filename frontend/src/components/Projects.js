@@ -1,42 +1,41 @@
-import React from 'react';
+import React from "react";
 
-const User = ({user}) => {
+const Project = ({project}) => {
     return (
         <tr className="row">
             <td className="column">
-                <span>{user.username}</span>
+                <span>{project.title}</span>
             </td>
             <td className="column">
-                <span>{user.firstName}</span>
+                <span>{project.url}</span>
             </td>
             <td className="column">
-                <span>{user.lastName}</span>
+                <span>{project.repositoryLink}</span>
             </td>
             <td className="column">
-                <span>{user.email}</span>
+                <span>{project.users}</span>
             </td>
         </tr>
     );
-};
+}
 
-const UsersList = ({users}) => {
+const Projects = ({projects}) => {
     return (
         <table className='inner_table container'>
             <th className="column">
-                <span>Username</span>
+                <span>Title</span>
             </th>
             <th className="column">
-                <span>First Name</span>
+                <span>Url</span>
             </th>
             <th className="column">
-                <span>Last Name</span>
+                <span>Repository Link</span>
             </th>
             <th className="column">
-                <span>E-mail address</span>
+                <span>Users</span>
             </th>
-            {users.map((user) => <User user={user}/>)}
+            {projects.map((project) => <Project project={project}/>)}
         </table>
     );
-};
-
-export default UsersList;
+}
+export default Projects;
