@@ -5,6 +5,7 @@ import FooterInfo from './components/Footer';
 import Menu from './components/Menu';
 import Projects from "./components/Projects";
 import Remarks from "./components/ToDo";
+import ProjectDetail from "./components/ProjectDetail";
 import {BrowserRouter, Route} from "react-router-dom";
 import axios from 'axios';
 
@@ -43,7 +44,6 @@ class App extends React.Component {
         ).then(
             response => {
               const remarks = response.data.results;
-              console.dir(response.data);
               this.setState(
                   {
                       'remarks': remarks,
@@ -76,8 +76,15 @@ class App extends React.Component {
                 <BrowserRouter>
                     < Menu links={this.state.links}/>
                     <Route exact path={'/users'} component={() => < UsersList users={this.state.users}/>}/>
-                    <Route exact path={'/projects'} component={() => < Projects projects={this.state.projects}/>}/>
-                    <Route exact path={'/ToDo'} component={() => <Remarks remarks={this.state.remarks} />}/>
+                    <Route exact path={'/projects'}>
+                        < Projects projects={this.state.projects} users={this.state.users}/>
+                    </Route>
+                    <Route path={"/projects/:id"}>
+                            < ProjectDetail projects={this.state.projects} users={this.state.users}/>
+                    </Route>
+                    <Route exact path={'/ToDo'}>
+                        < Remarks remarks={this.state.remarks} />
+                    </Route>
                 </BrowserRouter>
                     < FooterInfo />
             </div>

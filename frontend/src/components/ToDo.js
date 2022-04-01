@@ -34,7 +34,7 @@ const Remarks = ({remarks}) => {
             <th className="column">
                 <span>Status</span>
             </th>
-            {remarks.map((remark) => <Remark remark={remark}/>)}
+            {remarks.map((remark) => <Remark key={remark.id} remark={remark}/>)}
         </table>
     );
 }
