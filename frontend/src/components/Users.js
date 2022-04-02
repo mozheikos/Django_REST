@@ -21,8 +21,8 @@ const User = ({user}) => {
 };
 
 const UsersList = ({App, users}) => {
-    let start = (App.state.users_page - 1) * 100;
-    let end = start + 100;
+    let start = (App.state.users_page - 1) * App.state.users_limit;
+    let end = start + App.state.users_limit;
     users = users.slice(start, end)
     return (
             <div>
