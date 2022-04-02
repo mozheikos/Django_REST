@@ -1,14 +1,13 @@
 import React from "react";
-import {Link, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 
 const ProjectUser = ({ user }) => {
     return (
         <div>
-            {<Link to={`/users/${user.id}`}>{user.username}</Link>}
+            {user.username}
         </div>
     )
 }
-
 
 const ProjectDetail = ({projects, users}) => {
     let { id } = useParams();
