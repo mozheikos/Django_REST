@@ -23,7 +23,6 @@ const Projects = ({App, projects, users}) => {
     let start = (App.state.projects_page - 1) * 10;
     let end = start + 10;
     projects = projects.slice(start, end);
-    console.dir(App)
     return (
         <div>
             <div className={"paginator_box"}>

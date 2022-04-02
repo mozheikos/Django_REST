@@ -31,7 +31,6 @@ const Remarks = ({App, remarks, users}) => {
     let start = (App.state.remarks_page - 1) * App.state.remarks_limit;
     let end = start + App.state.remarks_limit;
     remarks = remarks.slice(start, end);
-    console.dir(App)
     return (
         <div>
             <div className={"paginator_box"}>
