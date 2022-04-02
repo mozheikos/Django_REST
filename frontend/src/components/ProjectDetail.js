@@ -14,6 +14,13 @@ const ProjectDetail = ({projects, users}) => {
     let { id } = useParams();
     id = Number.parseInt(id);
     let project = projects.find(item => item.id === id);
+    if (!projects.length || !users.length) {
+        return (
+            <table className='inner_table container'>
+                <tr><td><h1>Идет загрузка....</h1></td></tr>
+            </table>
+        )
+    }
     return (
         <table className='inner_table container'>
             <tr>

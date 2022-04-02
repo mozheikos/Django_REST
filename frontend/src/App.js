@@ -6,7 +6,7 @@ import Menu from './components/Menu';
 import Projects from "./components/Projects";
 import Remarks from "./components/ToDo";
 import ProjectDetail from "./components/ProjectDetail";
-import {BrowserRouter, Route} from "react-router-dom";
+import {BrowserRouter, Redirect, Route} from "react-router-dom";
 import axios from 'axios';
 
 class App extends React.Component {
@@ -76,9 +76,7 @@ class App extends React.Component {
                 <BrowserRouter>
                     < Menu links={this.state.links}/>
                     <Route exact path={'/users'} component={() => < UsersList users={this.state.users}/>}/>
-                    <Route exact path={'/projects'}>
-                        < Projects projects={this.state.projects} users={this.state.users}/>
-                    </Route>
+                    <Route exact path={'/projects'} component={() => < Projects projects={this.state.projects} users={this.state.users}/>}/>
                     <Route path={"/projects/:id"}>
                             < ProjectDetail projects={this.state.projects} users={this.state.users}/>
                     </Route>
