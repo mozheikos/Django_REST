@@ -67,10 +67,51 @@ td, th {
   height: 60px;
 }
 .menu_link {
-  color: black;
+  color: #FFF;
   text-decoration: none;
+  text-shadow: 1px 1px 5px black;
 }
+.menu_link.active {
+  color: #FFF;
+  text-shadow: 1px 5px 5px black;
+}
+
 .menu_link:hover {
   color: #FFF;
+  text-shadow: 1px 5px 5px black;
+}
+
+.list_link {
+  color: #282c34;
+  text-decoration: none;
+  text-shadow: 0 0 2px black;
+}
+.list_link:hover {
+  color: black;
+  text-shadow: 1px 5px 5px black;
   text-decoration: underline;
+
+}
+.paginator {
+  margin: 50px;
+
+}
+.paginator_box {
+  display: flex;
+  height: 2em;
+  align-items: center;
+  justify-content: center;
+}
+
+.paginator_box button {
+  background-color: grey;
+  padding: 5px 20px;
+  border-radius: 5px;
+  color: #FFFFFF;
+  text-shadow: 1px 1px 5px black;
+  box-shadow: 1px 1px 3px black;
+  border-color: grey;
+}
+.paginator_box button:active {
+  box-shadow: none;
 }

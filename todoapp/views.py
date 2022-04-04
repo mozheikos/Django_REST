@@ -1,5 +1,5 @@
 from rest_framework.response import Response
-
+from rest_framework.permissions import IsAuthenticated
 from .models import Project, ToDo
 from .serializers import ProjectModelSerializer, ToDoModelSerializer
 from rest_framework.viewsets import ModelViewSet
@@ -14,6 +14,7 @@ class ProjectModelViewSet(ModelViewSet):
     pagination_class = ProjectListPagination
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = ProjectFilter
+    permission_classes = [IsAuthenticated]
 
 
 class ToDoModelViewSet(ModelViewSet):

@@ -1,18 +1,21 @@
 import React from 'react';
+import {NavLink} from "react-router-dom";
 
-const MenuLink = ({link}) => {
+const MenuLink = ({link, path}) => {
     return (
         <li>
-            <a href={'#'} className={"menu_link"}>{link}</a>
+            <NavLink to={path} className="menu_link">{link}</NavLink>
         </li>
     );
 };
 
 const Menu = ({links}) => {
     return (
-        <ul className="footer_info container">
-            {links.map((link) => <MenuLink link={link}/>)}
-        </ul>
+        <nav>
+            <ul className="footer_info container">
+                    {links.map((link, index) => < MenuLink key={index} link={link.verbose_name} path={link.link}/>)}
+            </ul>
+        </nav>
     );
 };
 export default Menu;

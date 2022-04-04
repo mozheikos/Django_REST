@@ -4,16 +4,9 @@ from rest_framework import serializers
 
 
 class ProjectModelSerializer(serializers.ModelSerializer):
-    users = serializers.HyperlinkedRelatedField(  # HyperLinkRelatedField for quick transfer to users page
-        view_name="user-detail",
-        many=True,
-        read_only=False,
-        queryset=User.objects.all(),
-    )
-
     class Meta:
         model = Project
-        fields = ("title", "url", "users", "repository_link",)
+        fields = ("id", "title", "url", "users", "repository_link",)
 
 
 class ToDoModelSerializer(serializers.ModelSerializer):
