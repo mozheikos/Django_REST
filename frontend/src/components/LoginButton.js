@@ -6,15 +6,16 @@ const LoginButton = ({user, App}) => {
         return (
             <div className={"login_box"}>
                 <span className={"username"}> Welcome, <b>{user.firstName}</b></span>
-                <button className={"logout"} onClick={() => {
+                <Link className={"logout"} onClick={(event) => {
+                    event.preventDefault();
                     App.logout();
-                }}>LOGOUT</button>
+                }}>Log out</Link>
             </div>
         )
     }
     return (
         <div className={"login_box"}>
-            <Link className={"logout"} to={"/login"}>LOGIN</Link>
+            <Link className={"logout"} to={"/login"}>Log in</Link>
         </div>
     )
 }

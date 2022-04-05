@@ -131,7 +131,22 @@ td, th {
   border-radius: 5px;
   color: #FFFFFF;
   text-shadow: 1px 1px 5px black;
-  box-shadow: 1px 1px 3px black;
+  box-shadow: 1px 2px 2px 1px black;
   border-color: grey;
   cursor: pointer;
+  text-decoration: none;
+}
+.login {
+  box-shadow: 1px 1px 2px black;
+  font-size: 14px;
+}
+.label {
+  font-size: 18px;
+}
+.input {
+  margin: 0 15px;
+  line-height: 1.8em;
+}
+#login {
+  margin: 50px auto;
 }

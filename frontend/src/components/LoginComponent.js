@@ -19,16 +19,14 @@ class LoginComponent extends React.Component {
     render() {
         return (
                 <form id={"login"} onSubmit={(event) => this.handlerSubmit(event)}>
-                    <label>Username: </label>
-                    <input type={"text"} name={"username"} placeholder={"Enter username"}/>
-                    <label>Password: </label>
-                    <input type={"password"} name={"password"}/>
-                    <button type={'submit'} form={"login"}>Login</button>
+                    <label className={"label"}>Username: </label>
+                    <input className={"input"} type={"text"} name={"username"} placeholder={"Enter username"}/>
+                    <label className={"label"}>Password: </label>
+                    <input className={"input"} type={"password"} name={"password"} placeholder={"Enter password"}/>
+                    <button className={'logout login'} type={'submit'} form={"login"}>Login</button>
                 </form>
-            )
-
+        )
     }
 }
-
 
 export default LoginComponent;

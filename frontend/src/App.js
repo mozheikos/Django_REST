@@ -21,7 +21,7 @@ class App extends React.Component {
         this.state = {
             'users': [],
             'users_page': 1,
-            "users_pages": null,
+            'users_pages': null,
             'users_offset': 0,
             'users_limit': 100,
             'projects': [],
@@ -50,7 +50,7 @@ class App extends React.Component {
             headers = this.get_headers()
         }
         axios.get(
-            `http://127.0.0.1:8000/api/users/?offset=${this.state.users_offset}&limit=${this.state.users_limit}`,
+            `http://127.0.0.1:8000/api/users/?offset=0&limit=${this.state.users_limit}`,
             {headers}).then(
             response => {
                 const users = response.data.results;
@@ -66,13 +66,10 @@ class App extends React.Component {
         ).catch(
             error => {
                 console.log(error);
-                if (error.statusText === "Unauthorized") {
-                    this.refresh_token()
-                }
             }
         );
         axios.get(
-            `http://127.0.0.1:8000/api/ToDo/?offset=${this.state.remarks_offset}&limit=${this.state.remarks_limit}`,
+            `http://127.0.0.1:8000/api/ToDo/?offset=0&limit=${this.state.remarks_limit}`,
         {headers}).then(
             response => {
               const remarks = response.data.results;
@@ -86,13 +83,10 @@ class App extends React.Component {
             }
         ).catch(
             error => {console.log(error);
-            if (error.statusText === "Unauthorized") {
-                    this.refresh_token()
-                }
             }
         );
         axios.get(
-            `http://127.0.0.1:8000/api/projects/?offset=${this.state.projects_offset}&limit=${this.state.projects_limit}`,
+            `http://127.0.0.1:8000/api/projects/?offset=0&limit=${this.state.projects_limit}`,
         {headers}).then(
             response => {
               const projects = response.data.results;
@@ -107,9 +101,6 @@ class App extends React.Component {
         ).catch(
             error => {
                 console.dir(error);
-                if (error.statusText === "Unauthorized") {
-                    this.refresh_token()
-                }
             }
         );
     }
@@ -127,6 +118,8 @@ class App extends React.Component {
 
     componentDidMount() {
         this.get_cookie();
+        this.get_user_from_token();
+        this.get_content();
     }
 
     refresh_token(){
@@ -138,17 +131,30 @@ class App extends React.Component {
                 "access_token": access,
                 "refresh_token": refresh
             })
-        }).catch(error => console.dir(error))
+        }).catch(error => console.dir(error));
+        this.set_cookie();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevState.access_token !== this.state.access_token){
+            this.setState({
+                'users_page': 1,
+                'projects_page': 1,
+                'remarks_page': 1,
+                'users_offset': 0,
+                'projects_offset': 0,
+                'remarks_offset': 0,
+                'users': [],
+                'projects': [],
+                'remarks': [],
+            })
             this.get_content();
-            this.set_cookie();
             this.get_user_from_token();
         }
         let headers;
-        headers = this.get_headers();
+        if (this.is_authenticated()){
+            headers = this.get_headers();
+        }
         if (prevState.users_offset < this.state.users_offset) {
             axios.get(
                 `http://127.0.0.1:8000/api/users/?offset=${this.state.users_offset}&limit=${this.state.users_limit}`,
@@ -163,9 +169,6 @@ class App extends React.Component {
             }).catch(
                 error => {
                     console.log(error);
-                    if (error.statusText === "Unauthorized") {
-                        this.refresh_token()
-                    }
                 }
             );
         }
@@ -183,9 +186,6 @@ class App extends React.Component {
             }).catch(
                 error => {
                     console.log(error);
-                    if (error.statusText === "Unauthorized") {
-                        this.refresh_token()
-                    }
                 }
             );
         }
@@ -203,22 +203,19 @@ class App extends React.Component {
             }).catch(
                 error => {
                     console.log(error);
-                    if (error.statusText === "Unauthorized") {
-                        this.refresh_token()
-                    }
                 }
             );
         }
     }
 
     get_cookie() {
-        const cookie = new Cookies()
-        let access = cookie.get('access');
-        let refresh = cookie.get('refresh');
-        this.setState({
-            "access_token": access,
-            "refresh_token": refresh
-        })
+        const cookie = new Cookies();
+            let access = cookie.get('access');
+            let refresh = cookie.get('refresh');
+            this.setState({
+                "access_token": access,
+                "refresh_token": refresh
+            })
     }
 
     set_cookie() {
@@ -232,7 +229,6 @@ class App extends React.Component {
         let token = this.state.access_token;
         if (token) {
             const user = jwt_decode(token).user_id;
-            console.dir(user);
             let headers;
             if (this.is_authenticated()) {
                 headers = this.get_headers()
@@ -252,31 +248,31 @@ class App extends React.Component {
             "password": password}).then(response => {
                 const access = response.data.access;
                 const refresh = response.data.refresh;
-                console.dir(response);
                 this.setState({
                     "access_token": access,
                     "refresh_token": refresh,
-                })
+                });
+                this.set_cookie();
+                this.get_user_from_token();
+                this.get_content();
         }).catch(error => console.dir(error));
-        this.set_cookie();
-        this.get_user_from_token();
     }
 
     set_credentials(username, password) {
         this.get_access(username, password);
     }
 
-    // logout() {
-    //     const cookie = new Cookies();
-    //     cookie.remove("access");
-    //     cookie.remove("refresh");
-    //     this.setState({
-    //         "access_token": '',
-    //         "refresh_token": '',
-    //         'user': null
-    //     })
-    //     this.get_content();
-    // }
+    logout() {
+        const cookie = new Cookies();
+        cookie.remove("access");
+        cookie.remove("refresh");
+        cookie.remove("user");
+        this.setState({
+            'access_token': '',
+            'refresh_token': '',
+            'user': null,
+        })
+    }
 
     render() {
         return (
@@ -284,10 +280,12 @@ class App extends React.Component {
             <div className="table">
                 <BrowserRouter>
                     < Menu links={this.state.links}/>
-                    {/*< LoginButton user={this.state.user} App={this}/>*/}
+                    < LoginButton user={this.state.user} App={this}/>
                     <Route exact path={"/login"} component={() => <LoginComponent get_token={(username, password) => this.set_credentials(username, password)}/>}/>
                     <Route exact path={'/users'} component={() => < UsersList App={this} users={this.state.users}/>}/>
-                    <Route exact path={'/projects'} component={() => < Projects App={this} projects={this.state.projects} users={this.state.users}/>}/>
+                    <Route exact path={'/projects'} component={() =>
+                        this.is_authenticated() ? < Projects App={this} projects={this.state.projects} users={this.state.users}/>
+                                                : <LoginComponent get_token={(username, password) => this.set_credentials(username, password)}/>}/>
                     <Route path={"/projects/:id"}>
                             < ProjectDetail projects={this.state.projects} users={this.state.users}/>
                     </Route>
