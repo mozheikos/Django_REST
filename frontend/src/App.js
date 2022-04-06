@@ -220,9 +220,17 @@ class App extends React.Component {
 
     set_cookie() {
         const cookie = new Cookies();
-        cookie.set('access', this.state.access_token);
-        cookie.set('refresh', this.state.refresh_token);
-        cookie.set('user', this.state.user);
+        const access_exp = jwt_decode(this.state.access_token).exp;
+        const refresh_exp = jwt_decode(this.state.refresh_token).exp;
+        let access_exp_data = new Date(access_exp * 1000);
+        let refresh_exp_data = new Date(refresh_exp * 1000);
+        let options_access = {"expires": access_exp_data};
+        let options_refresh = {"expires": refresh_exp_data};
+        let options_user = {"expires": access_exp_data};
+
+        cookie.set('access', this.state.access_token, options_access);
+        cookie.set('refresh', this.state.refresh_token, options_refresh);
+        cookie.set('user', this.state.user, options_user);
     }
 
     get_user_from_token() {
