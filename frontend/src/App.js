@@ -7,8 +7,12 @@ import Projects from "./components/Projects";
 import Remarks from "./components/ToDo";
 import ProjectDetail from "./components/ProjectDetail";
 import UserDetail from "./components/UserDetail";
-import {BrowserRouter, Route} from "react-router-dom";
+import LoginButton from "./components/LoginButton";
+import LoginComponent from "./components/LoginComponent";
+import {BrowserRouter, Link, Route} from "react-router-dom";
 import axios from 'axios';
+import Cookies from "universal-cookie/es6";
+import jwt_decode from "jwt-decode";
 
 
 class App extends React.Component {
@@ -17,7 +21,7 @@ class App extends React.Component {
         this.state = {
             'users': [],
             'users_page': 1,
-            "users_pages": null,
+            'users_pages': null,
             'users_offset': 0,
             'users_limit': 100,
             'projects': [],
@@ -30,6 +34,9 @@ class App extends React.Component {
             'remarks_pages': null,
             'remarks_offset': 0,
             'remarks_limit': 2,
+            'access_token': '',
+            'refresh_token': '',
+            'user': null,
             'links': [
                 {"verbose_name": "Все пользователи", "link": "/users"},
                 {"verbose_name": "Проекты", "link": "/projects"},
@@ -37,11 +44,14 @@ class App extends React.Component {
             ],
         };
     }
-
-    componentDidMount() {
+    get_content(){
+        let headers;
+        if (this.is_authenticated()) {
+            headers = this.get_headers()
+        }
         axios.get(
-            `http://127.0.0.1:8000/api/users/?offset=${this.state.users_offset}&limit=${this.state.users_limit}`
-        ).then(
+            `http://127.0.0.1:8000/api/users/?offset=0&limit=${this.state.users_limit}`,
+            {headers}).then(
             response => {
                 const users = response.data.results;
                 const pages = Math.ceil(response.data.count / this.state.users_limit);
@@ -54,11 +64,13 @@ class App extends React.Component {
                 );
             }
         ).catch(
-            error => console.log(error)
+            error => {
+                console.log(error);
+            }
         );
         axios.get(
-            `http://127.0.0.1:8000/api/ToDo/?offset=${this.state.remarks_offset}&limit=${this.state.remarks_limit}`
-        ).then(
+            `http://127.0.0.1:8000/api/ToDo/?offset=0&limit=${this.state.remarks_limit}`,
+        {headers}).then(
             response => {
               const remarks = response.data.results;
               const pages = Math.ceil(response.data.count / this.state.remarks_limit);
@@ -70,11 +82,12 @@ class App extends React.Component {
               );
             }
         ).catch(
-            error => console.log(error)
+            error => {console.log(error);
+            }
         );
         axios.get(
-            `http://127.0.0.1:8000/api/projects/?offset=${this.state.projects_offset}&limit=${this.state.projects_limit}`
-        ).then(
+            `http://127.0.0.1:8000/api/projects/?offset=0&limit=${this.state.projects_limit}`,
+        {headers}).then(
             response => {
               const projects = response.data.results;
               const pages = Math.ceil(response.data.count / this.state.projects_limit);
@@ -86,15 +99,66 @@ class App extends React.Component {
               );
             }
         ).catch(
-            error => console.log(error)
+            error => {
+                console.dir(error);
+            }
         );
     }
 
+    get_headers() {
+        return {
+            "Authorization": `Bearer ${this.state.access_token}`,
+            "Content-Type": "application/json"
+        }
+    }
+
+    is_authenticated() {
+        return !!this.state.access_token
+    }
+
+    componentDidMount() {
+        this.get_cookie();
+        this.get_user_from_token();
+        this.get_content();
+    }
+
+    refresh_token(){
+        axios.post("http://127.0.0.1:8000/api/jwt-token/refresh/", {"refresh": this.state.refresh_token}
+        ).then(response => {
+            const access = response.data.access;
+            const refresh = response.data.refresh;
+            this.setState({
+                "access_token": access,
+                "refresh_token": refresh
+            })
+        }).catch(error => console.dir(error));
+        this.set_cookie();
+    }
+
     componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevState.access_token !== this.state.access_token){
+            this.setState({
+                'users_page': 1,
+                'projects_page': 1,
+                'remarks_page': 1,
+                'users_offset': 0,
+                'projects_offset': 0,
+                'remarks_offset': 0,
+                'users': [],
+                'projects': [],
+                'remarks': [],
+            })
+            this.get_content();
+            this.get_user_from_token();
+        }
+        let headers;
+        if (this.is_authenticated()){
+            headers = this.get_headers();
+        }
         if (prevState.users_offset < this.state.users_offset) {
             axios.get(
-                `http://127.0.0.1:8000/api/users/?offset=${this.state.users_offset}&limit=${this.state.users_limit}`
-            ).then(response => {
+                `http://127.0.0.1:8000/api/users/?offset=${this.state.users_offset}&limit=${this.state.users_limit}`,
+                {headers}).then(response => {
                 const users = this.state.users;
                 users.push(...response.data.results)
                 this.setState(
@@ -103,13 +167,15 @@ class App extends React.Component {
                     }
                 )
             }).catch(
-                error => console.log(error)
+                error => {
+                    console.log(error);
+                }
             );
         }
         if (prevState.projects_offset < this.state.projects_offset) {
             axios.get(
-                `http://127.0.0.1:8000/api/projects/?offset=${this.state.projects_offset}&limit=${this.state.projects_limit}`
-            ).then(response => {
+                `http://127.0.0.1:8000/api/projects/?offset=${this.state.projects_offset}&limit=${this.state.projects_limit}`,
+            {headers}).then(response => {
                 const projects = this.state.projects;
                 projects.push(...response.data.results)
                 this.setState(
@@ -118,13 +184,15 @@ class App extends React.Component {
                     }
                 )
             }).catch(
-                error => console.log(error)
+                error => {
+                    console.log(error);
+                }
             );
         }
         if (prevState.remarks_offset < this.state.remarks_offset) {
             axios.get(
-                `http://127.0.0.1:8000/api/ToDo/?offset=${this.state.remarks_offset}&limit=${this.state.remarks_limit}`
-            ).then(response => {
+                `http://127.0.0.1:8000/api/ToDo/?offset=${this.state.remarks_offset}&limit=${this.state.remarks_limit}`,
+            {headers}).then(response => {
                 const remarks = this.state.remarks;
                 remarks.push(...response.data.results)
                 this.setState(
@@ -133,9 +201,85 @@ class App extends React.Component {
                     }
                 )
             }).catch(
-                error => console.log(error)
+                error => {
+                    console.log(error);
+                }
             );
         }
+    }
+
+    get_cookie() {
+        const cookie = new Cookies();
+            let access = cookie.get('access');
+            let refresh = cookie.get('refresh');
+            this.setState({
+                "access_token": access,
+                "refresh_token": refresh
+            })
+    }
+
+    set_cookie() {
+        const cookie = new Cookies();
+        const access_exp = jwt_decode(this.state.access_token).exp;
+        const refresh_exp = jwt_decode(this.state.refresh_token).exp;
+        let access_exp_data = new Date(access_exp * 1000);
+        let refresh_exp_data = new Date(refresh_exp * 1000);
+        let options_access = {"expires": access_exp_data};
+        let options_refresh = {"expires": refresh_exp_data};
+        let options_user = {"expires": access_exp_data};
+
+        cookie.set('access', this.state.access_token, options_access);
+        cookie.set('refresh', this.state.refresh_token, options_refresh);
+        cookie.set('user', this.state.user, options_user);
+    }
+
+    get_user_from_token() {
+        let token = this.state.access_token;
+        if (token) {
+            const user = jwt_decode(token).user_id;
+            let headers;
+            if (this.is_authenticated()) {
+                headers = this.get_headers()
+            }
+            axios.get(`http://127.0.0.1:8000/api/users/${user}`, {headers}).then(
+                response => {
+                    this.setState({
+                        "user": response.data
+                    })
+                }
+            ).catch(error => console.log(error))
+        }
+    }
+
+    get_access(username, password) {
+        axios.post("http://localhost:8000/api/jwt-token/", {"username": username,
+            "password": password}).then(response => {
+                const access = response.data.access;
+                const refresh = response.data.refresh;
+                this.setState({
+                    "access_token": access,
+                    "refresh_token": refresh,
+                });
+                this.set_cookie();
+                this.get_user_from_token();
+                this.get_content();
+        }).catch(error => console.dir(error));
+    }
+
+    set_credentials(username, password) {
+        this.get_access(username, password);
+    }
+
+    logout() {
+        const cookie = new Cookies();
+        cookie.remove("access");
+        cookie.remove("refresh");
+        cookie.remove("user");
+        this.setState({
+            'access_token': '',
+            'refresh_token': '',
+            'user': null,
+        })
     }
 
     render() {
@@ -144,8 +288,12 @@ class App extends React.Component {
             <div className="table">
                 <BrowserRouter>
                     < Menu links={this.state.links}/>
+                    < LoginButton user={this.state.user} App={this}/>
+                    <Route exact path={"/login"} component={() => <LoginComponent get_token={(username, password) => this.set_credentials(username, password)}/>}/>
                     <Route exact path={'/users'} component={() => < UsersList App={this} users={this.state.users}/>}/>
-                    <Route exact path={'/projects'} component={() => < Projects App={this} projects={this.state.projects} users={this.state.users}/>}/>
+                    <Route exact path={'/projects'} component={() =>
+                        this.is_authenticated() ? < Projects App={this} projects={this.state.projects} users={this.state.users}/>
+                                                : <LoginComponent get_token={(username, password) => this.set_credentials(username, password)}/>}/>
                     <Route path={"/projects/:id"}>
                             < ProjectDetail projects={this.state.projects} users={this.state.users}/>
                     </Route>
