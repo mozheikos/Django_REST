@@ -16,6 +16,9 @@ class ProjectModelViewSet(ModelViewSet):
     filterset_class = ProjectFilter
     permission_classes = [IsAuthenticated]
 
+    def update(self, request, pk=None, *args, **kwargs):
+        return super(ProjectModelViewSet, self).update(request=request, pk=pk, partial=True, *args, **kwargs)
+
 
 class ToDoModelViewSet(ModelViewSet):
     queryset = ToDo.objects.all()
@@ -23,6 +26,9 @@ class ToDoModelViewSet(ModelViewSet):
     pagination_class = ToDOListPagination
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ToDoFilter
+
+    def update(self, request, pk=None, *args, **kwargs):
+        return super(ToDoModelViewSet, self).update(request=request, pk=pk, partial=True, *args, **kwargs)
 
     def destroy(self, request, pk=None, *args, **kwargs):
         obj = ToDo.objects.get(pk=pk)

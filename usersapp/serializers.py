@@ -1,11 +1,19 @@
 from rest_framework.serializers import ModelSerializer
 from .models import User
+from todoapp.models import Project
 from todoapp.serializers import ProjectModelSerializer
 from rest_framework import serializers
 
 
 class UserModelSerializer(ModelSerializer):
-    project_set = ProjectModelSerializer(many=True)
+
+    project_set = serializers.SlugRelatedField(
+        many=True,
+        read_only=False,
+        queryset=Project.objects.all(),
+        slug_field="title"
+    )
+
     todo_set = serializers.HyperlinkedRelatedField(
         view_name="todo-detail",
         many=True,
@@ -14,6 +22,25 @@ class UserModelSerializer(ModelSerializer):
 
     # Commented this option, not sure, what is better
     # todo_set = ToDoModelSerializer(many=True, read_only=False)
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            'url',
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+            'is_superuser',
+            'project_set',
+            'todo_set'
+        )
+
+
+class UserModelSerializerGet(UserModelSerializer):
+
+    project_set = ProjectModelSerializer(many=True)
 
     class Meta:
         model = User
