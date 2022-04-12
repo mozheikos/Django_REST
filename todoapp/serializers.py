@@ -26,4 +26,10 @@ class ToDoModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ToDo
-        fields = ("user", "project", "url", "text", "created_at", "updated_at", "status")
+        fields = (
+            "user",
+            "project",
+            "text",
+            "created_at",
+            "updated_at",
+            "status")

@@ -3,7 +3,7 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin, CreateModelMixin, \
     DestroyModelMixin
 from django.http import JsonResponse
-from .serializers import UserModelSerializer, UserModelSerializerGet
+from .serializers import UserModelSerializer, UserModelSerializerWithRole
 from rest_framework.pagination import LimitOffsetPagination
 
 
@@ -17,13 +17,13 @@ class UserModelViewSet(
 ):
 
     queryset = User.objects.all()
-    serializer_class = UserModelSerializer
     pagination_class = LimitOffsetPagination
 
     def get_serializer_class(self):
-        if self.request.method.lower() == 'get':
-            return UserModelSerializerGet
-        return UserModelSerializer
+        # if self.basename == 'v1': # В другом варианте раскомментировать
+        if self.request.version == "v1":  # В другом варианте закомментировать
+            return UserModelSerializer
+        return UserModelSerializerWithRole
 
 
 def get_links(request):
