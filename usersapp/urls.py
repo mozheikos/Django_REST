@@ -7,7 +7,7 @@ from usersapp.views import UserModelViewSet
 app_name = "usersapp"
 
 router = DefaultRouter()
-router.register("users", UserModelViewSet)
+router.register("", UserModelViewSet)
 
 urlpatterns = (
     path("", include((router.urls, "usersapp"))),

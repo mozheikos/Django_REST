@@ -16,10 +16,33 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
-from usersapp.views import UserModelViewSet, get_links
-from todoapp.views import ProjectModelViewSet, ToDoModelViewSet
 from rest_framework.authtoken import views
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+
+from usersapp.views import UserModelViewSet, get_links
+from todoapp.views import ProjectModelViewSet, ToDoModelViewSet
+
+
+schema_view = get_schema_view(
+    info=openapi.Info(
+        title="ToDo-Remarks",
+        default_version='v2',
+        description='documentation',
+        contact=openapi.Contact(
+                name="Stanislav",
+                url="https://github.com/mozheikos/Django_REST",
+                email="mozheiko.stanislav@yandex.ru"
+            ),
+        license=openapi.License(
+                name="MIT"
+            )
+        ),
+    public=True,
+    )
+
 
 router = DefaultRouter()
 # router.register("v1/users", UserModelViewSet, basename="v1")  # В другом варианте раскомментировать
@@ -31,13 +54,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('', include(router.urls)),
-    path('api/', include(router.urls)),
     path('api/jwt-token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/jwt-token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api-token-auth', views.obtain_auth_token),
     path('api/links/', get_links),
 
-    re_path(r'^api/v1/', include('usersapp.urls', namespace="v1")),  # В другом варианте закомментировать
-    re_path(r'^api/v2/', include('usersapp.urls', namespace="v2"))  # В другом варианте закомментировать
+    re_path(r'^users/v1/', include('usersapp.urls', namespace="v1")),  # В другом варианте закомментировать
+    re_path(r'^users/v2/', include('usersapp.urls', namespace="v2")),  # В другом варианте закомментировать
+
+    path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
 
