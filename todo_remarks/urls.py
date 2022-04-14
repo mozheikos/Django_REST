@@ -18,6 +18,7 @@ from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken import views
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from graphene_django.views import GraphQLView
 
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
@@ -63,5 +64,6 @@ urlpatterns = [
     re_path(r'^users/v2/', include('usersapp.urls', namespace="v2")),  # В другом варианте закомментировать
 
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('graphql/', GraphQLView.as_view(graphiql=True))
 ]
 
