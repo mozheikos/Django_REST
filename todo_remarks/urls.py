@@ -14,16 +14,39 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
-from usersapp.views import UserModelViewSet
-from usersapp.views import get_links
-from todoapp.views import ProjectModelViewSet, ToDoModelViewSet
 from rest_framework.authtoken import views
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+
+from usersapp.views import UserModelViewSet, get_links
+from todoapp.views import ProjectModelViewSet, ToDoModelViewSet
+
+
+schema_view = get_schema_view(
+    info=openapi.Info(
+        title="ToDo-Remarks",
+        default_version='v2',
+        description='documentation',
+        contact=openapi.Contact(
+                name="Stanislav",
+                url="https://github.com/mozheikos/Django_REST",
+                email="mozheiko.stanislav@yandex.ru"
+            ),
+        license=openapi.License(
+                name="MIT"
+            )
+        ),
+    public=True,
+    )
+
+
 router = DefaultRouter()
-router.register("users", UserModelViewSet)
+# router.register("v1/users", UserModelViewSet, basename="v1")  # В другом варианте раскомментировать
+# router.register("v2/users", UserModelViewSet, basename="v2")  # В другом варианте раскомментировать
 router.register("projects", ProjectModelViewSet)
 router.register("ToDo", ToDoModelViewSet)
 
@@ -31,38 +54,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('', include(router.urls)),
-    path('api/', include(router.urls)),
-
     path('api/jwt-token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/jwt-token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api-token-auth', views.obtain_auth_token),
     path('api/links/', get_links),
+
+    re_path(r'^users/v1/', include('usersapp.urls', namespace="v1")),  # В другом варианте закомментировать
+    re_path(r'^users/v2/', include('usersapp.urls', namespace="v2")),  # В другом варианте закомментировать
+
+    path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
 
-"""Ниже код, который я использовал, чтобы проверить jwt-авторизацию"""
-# import requests
-# import json
-#
-# credentials = {
-#     "username": "admin",
-#     "password": "admin"
-# }
-#
-# token_url = "http://localhost:8000/api/jwt-token/"
-# token_headers = {
-#     "content-type": "application/json",
-# }
-# token_data = json.dumps(credentials)
-# token = requests.post(url=token_url, data=token_data, headers=token_headers).json()
-# print(token)
-#
-# access_token = token["access"]
-# refresh_token = token["refresh"]
-#
-# get_projects_url = "http://localhost:8000/api/projects/"
-# get_projects_header = {
-#     "authorization": f"Bearer {access_token}"
-# }
-#
-# response = requests.get(url=get_projects_url, headers=get_projects_header).json()
-# print(response)

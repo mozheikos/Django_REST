@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'todoapp',
     "django_filters",
     'rest_framework_simplejwt',
+    'drf_yasg',
 ]
 
 REST_FRAMEWORK = {
@@ -77,7 +78,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
+    ],
+    "DEFAULT_VERSIONING_CLASS": 'rest_framework.versioning.NamespaceVersioning',
 }
 
 MIDDLEWARE = [
