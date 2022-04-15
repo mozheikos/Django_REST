@@ -43,31 +43,40 @@ class TODOType(DjangoObjectType):
 class Query(ObjectType):
 
     #  all
-    all_users = List(UserType, page=Int(required=False), paginate_by=Int(required=False))
-    all_projects = List(ProjectType)
-    all_remarks = List(TODOType)
+    all_users = List(
+        UserType,
+        page=Int(required=False),
+        paginate_by=Int(required=False)
+    )
+    all_projects = List(
+        ProjectType,
+        page=Int(required=False),
+        paginate_by=Int(required=False)
+    )
+    all_remarks = List(
+        TODOType,
+        page=Int(required=False),
+        paginate_by=Int(required=False)
+    )
 
     # filtered
     users_filtered = List(
         UserType,
         field=String(required=True),
-        value=String(required=False),
-        exact=Boolean(required=False),
-        sign=String(required=True)
+        sign=String(required=True),
+        value=String(required=False)
     )
     projects_filtered = List(
         ProjectType,
         field=String(required=True),
-        value=String(required=False),
-        exact=Boolean(required=False),
-        sign=String(required=True)
+        sign=String(required=True),
+        value=String(required=False)
     )
     remarks_filtered = List(
         TODOType,
         field=String(required=True),
-        value=String(required=False),
-        exact=Boolean(required=False),
-        sign=String(required=True)
+        sign=String(required=True),
+        value=String(required=False)
     )
 
     # one
@@ -88,13 +97,23 @@ class Query(ObjectType):
 
     # Projects list
     @staticmethod
-    def resolve_all_projects(root, info) -> typing.List[Project]:
-        return Project.objects.all()
+    def resolve_all_projects(root, info, page: int = None, paginate_by: int = 10) -> typing.List[Project]:
+        projects = Project.objects.all().order_by("id")
+        if not page:
+            return projects
+        start = paginate_by * (page - 1)
+        end = start + paginate_by
+        return projects[start:end]
 
     # Remarks list
     @staticmethod
-    def resolve_all_remarks(root, info) -> typing.List[ToDo]:
-        return ToDo.objects.all()
+    def resolve_all_remarks(root, info, page: int = None, paginate_by: int = 10) -> typing.List[ToDo]:
+        remarks = ToDo.objects.all().order_by("id")
+        if not page:
+            return remarks
+        start = paginate_by * (page - 1)
+        end = start + paginate_by
+        return remarks[start:end]
 
     # get current authorized user
     @staticmethod
