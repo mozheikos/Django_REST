@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "django_filters",
     'rest_framework_simplejwt',
     'drf_yasg',
+    "graphene_django"
 ]
 
 REST_FRAMEWORK = {
@@ -82,12 +83,16 @@ REST_FRAMEWORK = {
     "DEFAULT_VERSIONING_CLASS": 'rest_framework.versioning.NamespaceVersioning',
 }
 
+GRAPHENE = {
+    'SCHEMA': 'todo_remarks.schema.schema',
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
