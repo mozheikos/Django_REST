@@ -50,18 +50,20 @@ router = DefaultRouter()
 # router.register("v2/users", UserModelViewSet, basename="v2")  # В другом варианте раскомментировать
 router.register("projects", ProjectModelViewSet)
 router.register("ToDo", ToDoModelViewSet)
+router.register("users", UserModelViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('', include(router.urls)),
+    path('api/', include(router.urls)),
     path('api/jwt-token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/jwt-token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api-token-auth', views.obtain_auth_token),
     path('api/links/', get_links),
 
-    re_path(r'^users/v1/', include('usersapp.urls', namespace="v1")),  # В другом варианте закомментировать
-    re_path(r'^users/v2/', include('usersapp.urls', namespace="v2")),  # В другом варианте закомментировать
+    # re_path(r'^users/v1/', include('usersapp.urls', namespace="v1")),  # В другом варианте закомментировать
+    # re_path(r'^users/v2/', include('usersapp.urls', namespace="v2")),  # В другом варианте закомментировать
 
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('graphql/', GraphQLView.as_view(graphiql=True))

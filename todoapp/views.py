@@ -14,7 +14,7 @@ class ProjectModelViewSet(ModelViewSet):
     pagination_class = ProjectListPagination
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = ProjectFilter
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def update(self, request, pk=None, *args, **kwargs):
         return super(ProjectModelViewSet, self).update(request=request, pk=pk, partial=True, *args, **kwargs)

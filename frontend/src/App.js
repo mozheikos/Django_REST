@@ -9,6 +9,7 @@ import ProjectDetail from "./components/ProjectDetail";
 import UserDetail from "./components/UserDetail";
 import LoginButton from "./components/LoginButton";
 import LoginComponent from "./components/LoginComponent";
+import ProjectCreate from "./components/ProjectCreate";
 import {BrowserRouter, Link, Route} from "react-router-dom";
 import axios from 'axios';
 import Cookies from "universal-cookie/es6";
@@ -59,7 +60,6 @@ class App extends React.Component {
                     {
                         'users': users,
                         'users_pages': pages,
-
                     }
                 );
             }
@@ -282,6 +282,22 @@ class App extends React.Component {
         })
     }
 
+    create_project(data) {
+        const headers = this.get_headers()
+        axios.post('http://127.0.0.1:8000/api/projects/', data, {headers}
+        ).then(response => {
+                this.setState({
+                    'projects_page': 1,
+                    'projects_offset': 0,
+                    'projects': [],
+                });
+                this.get_cookie();
+                this.get_user_from_token();
+                this.get_content();
+            }
+        )
+    }
+
     render() {
         return (
 
@@ -294,9 +310,11 @@ class App extends React.Component {
                     <Route exact path={'/projects'} component={() =>
                         this.is_authenticated() ? < Projects App={this} projects={this.state.projects} users={this.state.users}/>
                                                 : <LoginComponent get_token={(username, password) => this.set_credentials(username, password)}/>}/>
+                    <Route exact path={"/project/create"} component={() => <ProjectCreate get_new_project={(data) => this.create_project(data)} />} />
                     <Route path={"/projects/:id"}>
                             < ProjectDetail projects={this.state.projects} users={this.state.users}/>
                     </Route>
+
                     <Route path={"/users/:id"}>
                             < UserDetail users={this.state.users} projects={this.state.projects} />
                     </Route>

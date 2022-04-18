@@ -1,5 +1,5 @@
 import React from "react";
-import {Link, Redirect} from "react-router-dom";
+import {Link} from "react-router-dom";
 
 
 const Project = ({project, users}) => {
@@ -52,6 +52,7 @@ const Projects = ({App, projects, users}) => {
                     }
                 }}>Next</button>
             </div>
+            <Link to={"/project/create"} >Create project</Link>
             <table className='inner_table container'>
                 <th className="column">
                     <span>Title</span>
