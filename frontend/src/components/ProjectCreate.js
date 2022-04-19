@@ -46,7 +46,6 @@ class ProjectCreate extends React.Component{
                 data[item.name].push(Number.parseInt(item.value))
             }
         }
-        console.dir(data);
         this.props.get_new_project(data);
     }
 

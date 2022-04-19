@@ -286,16 +286,25 @@ class App extends React.Component {
         const headers = this.get_headers()
         axios.post('http://127.0.0.1:8000/api/projects/', data, {headers}
         ).then(response => {
+                const projects = this.state.projects;
+                projects.push(response.data);
                 this.setState({
-                    'projects_page': 1,
-                    'projects_offset': 0,
-                    'projects': [],
+                    'projects': projects,
                 });
-                this.get_cookie();
-                this.get_user_from_token();
-                this.get_content();
             }
-        )
+        ).catch(error => console.log(error))
+    }
+    delete_project(id) {
+        const headers = this.get_headers();
+        axios.delete(`http://127.0.0.1:8000/api/projects/${id}/`, {headers}
+        ).then(
+            response => {
+                const projects = this.state.projects.filter(project => project.id !== id);
+                this.setState({
+                    'projects': projects
+                })
+            }
+        ).catch(error => console.log(error))
     }
 
     render() {
@@ -310,7 +319,9 @@ class App extends React.Component {
                     <Route exact path={'/projects'} component={() =>
                         this.is_authenticated() ? < Projects App={this} projects={this.state.projects} users={this.state.users}/>
                                                 : <LoginComponent get_token={(username, password) => this.set_credentials(username, password)}/>}/>
-                    <Route exact path={"/project/create"} component={() => <ProjectCreate get_new_project={(data) => this.create_project(data)} />} />
+                    <Route exact path={"/project/create"} component={() =>
+                        this.is_authenticated() ? <ProjectCreate get_new_project={(data) => this.create_project(data)} />
+                                                : <LoginComponent get_token={(username, password) => this.set_credentials(username, password)}/>}/>
                     <Route path={"/projects/:id"}>
                             < ProjectDetail projects={this.state.projects} users={this.state.users}/>
                     </Route>

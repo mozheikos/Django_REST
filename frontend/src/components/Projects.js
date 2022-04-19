@@ -2,7 +2,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 
 
-const Project = ({project, users}) => {
+const Project = ({App, project, users}) => {
     let users_list = users.filter((user) => project.users.includes(user.id));
     return (
         <tr className="row">
@@ -15,6 +15,10 @@ const Project = ({project, users}) => {
             <td className="column">
                 {users_list.map((user) => <div key={user.id}>{user.username}</div>)}
             </td>
+            {<td className="column">
+                {App.is_authenticated() ? <button onClick={() => {App.delete_project(project.id)}}>delete project</button>
+                                        : <button disabled={true}>delete project</button>}
+            </td>}
         </tr>
     );
 }
@@ -63,7 +67,7 @@ const Projects = ({App, projects, users}) => {
                 <th className="column">
                     <span>Users</span>
                 </th>
-                {projects.map((project) => <Project key={project.id} project={project} users={users}/>)}
+                {projects.map((project) => <Project key={project.id} App={App} project={project} users={users}/>)}
             </table>
         </div>
 );
