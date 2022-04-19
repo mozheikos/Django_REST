@@ -14,7 +14,8 @@ import {BrowserRouter, Route, Redirect} from "react-router-dom";
 import axios from 'axios';
 import Cookies from "universal-cookie/es6";
 import jwt_decode from "jwt-decode";
-import {useHistory} from "react-router-dom";
+import ToDOCreate from "./components/ToDOCreate";
+import Forbidden from "./components/Forbidden";
 
 
 class App extends React.Component {
@@ -329,6 +330,44 @@ class App extends React.Component {
         ).catch(error => console.log(error))
     }
 
+    create_remark(data) {
+        const headers = this.get_headers()
+        console.dir(data);
+        axios.post('http://127.0.0.1:8000/api/ToDo/', data, {headers}
+        ).then(response => {
+                const remarks = this.state.remarks;
+                let pages = this.state.remarks_pages;
+                remarks.push(response.data);
+                let new_pages = Math.ceil(remarks.length / this.state.remarks_limit);
+                if ( new_pages > pages ){
+                    pages = new_pages
+                }
+                this.setState({
+                    'remarks': remarks,
+                    'remarks_pages': pages
+                });
+            }
+        ).catch(error => console.log(error))
+    }
+
+    delete_remark(id) {
+        const headers = this.get_headers();
+        axios.delete(`http://127.0.0.1:8000/api/ToDo/${id}/`, {headers}
+        ).then(
+            response => {
+                let idx = null;
+                for (let i in this.state.remarks) {
+                    if (this.state.remarks[i].id === response.data.id) {
+                        idx = i;
+                        break
+                    }
+                }
+                const remarks = this.state.remarks;
+                remarks[idx] = response.data;
+            }
+        ).catch(error => console.log(error))
+    }
+
     render() {
         return (
 
@@ -354,6 +393,9 @@ class App extends React.Component {
                     <Route exact path={'/ToDo'}>
                         < Remarks App={this} remarks={this.state.remarks} users={this.state.users}/>
                     </Route>
+                    <Route exact path={"/ToDo/create"} component={() =>
+                        this.is_authenticated() ? <ToDOCreate get_new_remark={(data) => this.create_remark(data)} user={this.state.user}/>
+                                                : <Forbidden/>}/>
                 </BrowserRouter>
                     < FooterInfo />
             </div>

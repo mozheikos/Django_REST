@@ -1,6 +1,7 @@
 import React from "react";
+import {Link} from "react-router-dom";
 
-const Remark = ({remark, users}) => {
+const Remark = ({App, remark, users}) => {
     let user = users.find(user => user.username === remark.user)
     return (
         <tr className="row">
@@ -16,6 +17,10 @@ const Remark = ({remark, users}) => {
             <td className="column">
                 <span>{remark.status}</span>
             </td>
+            {<td className="column">
+                {App.is_authenticated() ? <button onClick={() => {App.delete_remark(remark.id)}}>delete remark</button>
+                                        : <button disabled={true}>delete remark</button>}
+            </td>}
         </tr>
     );
 }
@@ -60,6 +65,7 @@ const Remarks = ({App, remarks, users}) => {
                     }
                 }}>Next</button>
             </div>
+            <Link to={"/ToDo/create"}>Create remark</Link>
             <table className='inner_table container'>
                 <th className="column">
                     <span>User</span>
@@ -73,7 +79,8 @@ const Remarks = ({App, remarks, users}) => {
                 <th className="column">
                     <span>Status</span>
                 </th>
-                {remarks.map((remark) => <Remark key={remark.id} remark={remark} users={users}/>)}
+                <th></th>
+                {remarks.map((remark) => <Remark App={App} remark={remark} users={users}/>)}
             </table>
         </div>
     );
