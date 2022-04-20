@@ -284,7 +284,6 @@ class App extends React.Component {
         })
     }
 
-
     create_project(data) {
         const headers = this.get_headers()
         axios.post('http://127.0.0.1:8000/api/projects/', data, {headers}
@@ -303,6 +302,7 @@ class App extends React.Component {
             }
         ).catch(error => console.log(error))
     }
+
     delete_project(id) {
         const headers = this.get_headers();
         axios.delete(`http://127.0.0.1:8000/api/projects/${id}/`, {headers}
@@ -326,6 +326,29 @@ class App extends React.Component {
                     'projects_pages': new_pages
                 });
                 console.dir(this.state)
+            }
+        ).catch(error => console.log(error))
+    }
+
+    find_project(name) {
+        console.log(name);
+        this.setState({
+            'projects_page': 1,
+            'projects_pages': null,
+            'projects_offset': 0,
+            'projects': [],
+        });
+        axios.get(`http://127.0.0.1:8000/api/projects/?title=${name}&users=`
+        ).then(
+            response => {
+                const projects = response.data.results;
+                  const pages = Math.ceil(response.data.count / this.state.projects_limit);
+                  this.setState(
+                  {
+                      'projects': projects,
+                      'projects_pages': pages
+                  }
+              );
             }
         ).catch(error => console.log(error))
     }

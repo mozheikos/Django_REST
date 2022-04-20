@@ -1,5 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import ProjectSearch from "./ProjectSearch";
 
 
 const Project = ({App, project, users}) => {
@@ -56,7 +57,10 @@ const Projects = ({App, projects, users}) => {
                     }
                 }}>Next</button>
             </div>
-            <Link to={"/project/create"} >Create project</Link>
+            <div>
+                <Link to={"/project/create"} >Create project</Link>
+                <ProjectSearch App={App}/>
+            </div>
             <table className='inner_table container'>
                 <th className="column">
                     <span>Title</span>
