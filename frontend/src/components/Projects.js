@@ -74,6 +74,9 @@ const Projects = ({App, projects, users}) => {
                 <th className="column">
                     <span>Users</span>
                 </th>
+                <th className="column">
+                    <span>Actions</span>
+                </th>
                 {projects.map((project) => <Project key={project.id} App={App} project={project} users={users}/>)}
             </table>
         </div>

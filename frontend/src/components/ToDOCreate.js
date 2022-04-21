@@ -17,11 +17,13 @@ const ToDOCreate = ({App}) => {
             }
             App.create_remark(data)
         }}>
+            <label>Remark:</label>
+            <textarea className={"formInput"} name={"text"} placeholder={"input text"} />
+            <label>For project:</label>
             <select className={"formSingleSelect"} name={"project"} >
                 {projects.map(
                     (project) => <option key={project.id} value={project.id}>{project.title}</option>)}
             </select>
-            <textarea className={"formInput"} name={"text"} placeholder={"input text"} />
             <button className={"button"} type={"submit"} form={"createRemark"}>Create</button>
         </form>
     )

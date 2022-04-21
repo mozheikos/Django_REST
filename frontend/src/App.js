@@ -27,7 +27,7 @@ class App extends React.Component {
             'users_page': 1,
             'users_pages': null,
             'users_offset': 0,
-            'users_limit': 100,
+            'users_limit': 10,
             'projects': [],
             'projects_page': 1,
             'projects_pages': null,

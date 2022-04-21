@@ -44,15 +44,21 @@
   align-items: center;
 }
 .inner_table {
-  border: 1px solid black;
   border-collapse: collapse;
 }
 td, th {
   font-size: 16px;
   line-height: 30px;
-  border: 1px solid black;
   text-align: center;
 }
+tr:nth-child(2n) {
+  background-color: rgba(100, 100, 100 , 0.3);
+}
+th {
+  background-color: rgba(100, 100, 100 , 0.5);
+  /*border: 1px solid black;*/
+}
+
 .container {
   width: 80vw;
 }
@@ -145,8 +151,9 @@ td, th {
   box-shadow: 1px 1px 2px black;
   font-size: 14px;
 }
-.label {
+label {
   font-size: 18px;
+  font-weight: bold;
 }
 .input {
   margin: 0 15px;
@@ -169,9 +176,7 @@ td, th {
   margin-left: 20px;
   line-height: 20px;
 }
-label {
-  font-weight: bold;
-}
+
 #createProject {
   display: flex;
   flex-direction: column;

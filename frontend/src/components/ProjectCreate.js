@@ -21,11 +21,14 @@ const ProjectCreate = ({App}) => {
                 App.create_project(data);
             }
         }>
+            <label>Title:</label>
             <input className={"formInput"} type={"text"} name={"title"} placeholder={"input title"}/>
+            <label>Repository Link:</label>
+            <input className={"formInput"} type={'url'} name={"repository_link"}/>
+            <label>Users:</label>
             <select className={"formSelect"} name={"users"} multiple={true}>
                 {App.state.users.map((user) => <option key={user.id} value={user.id}>{user.username}</option>)}
             </select>
-            <input className={"formInput"} type={'url'} name={"repository_link"}/>
             <button className={"button"} type={"submit"} form={"createProject"}>Create</button>
         </form>
     )

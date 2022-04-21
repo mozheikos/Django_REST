@@ -31,8 +31,11 @@ const ProjectUpdate = ({App}) => {
             }
             App.update_project(id, data);
         }}>
+            <label>Title:</label>
             <input className={"formInput"} type={"text"} name={"title"} defaultValue={project.title}/>
+            <label>Repository Link:</label>
             <input className={"formInput"} type={"url"} name={"repository_link"} defaultValue={project.repositoryLink} />
+            <label>Users:</label>
             <select className={"formSelect"} multiple={true}>
                 {users.map(user => <option selected={project.users.includes(user.id)} value={user.id}>{user.username}</option>)}
             </select>

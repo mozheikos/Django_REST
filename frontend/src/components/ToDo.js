@@ -82,7 +82,9 @@ const Remarks = ({App, remarks, users}) => {
                 <th className="column">
                     <span>Status</span>
                 </th>
-                <th></th>
+                <th className="column">
+                    <span>Actions</span>
+                </th>
                 {remarks.map((remark) => <Remark App={App} remark={remark} users={users}/>)}
             </table>
         </div>
