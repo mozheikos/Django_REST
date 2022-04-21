@@ -1,66 +1,34 @@
 import React from "react";
-import axios from "axios";
 
-
-class ProjectCreate extends React.Component{
-    constructor(props) {
-        super(props);
-        this.state = {
-            'users': [],
-            'count': 0
-        }
+const ProjectCreate = ({App}) => {
+    if (!App.state.user){
+        return (<h1>Идет загрузка...</h1>)
     }
-    componentDidMount() {
-        const url = "http://127.0.0.1:8000/api/users"
-        axios.get(url
-            ).then(
-                response => {
-                    // console.dir(response);
-                    const offset = response.data.results.length;
-                    const limit = response.data.count - offset;
-                    this.setState({
-                        "users": response.data.results,
-                        "count": response.data.count
-                    });
-                    axios.get(url + `?offset=${offset}&limit=${limit}`).then(
-                        response2 => {
-                            const users = this.state.users;
-                            users.push(...response2.data.results);
-                            this.setState({
-                                "users": users
-                            })
+    return (
+        <form id={"createProject"} onSubmit={(event) => {
+                event.preventDefault();
+                const form = event.target;
+                const data = {"title": null, "users": [], "repository_link": null}
+                for (let item of form.children) {
+                    if (item.name in data && item.name !== "users") {
+                        data[item.name] = item.value
+                    } else if (item.name === "users") {
+                        for (let option of item.selectedOptions) {
+                            data[item.name].push(Number.parseInt(option.value))
                         }
-                    )
+                    }
                 }
-        ).catch(error => {console.log(error)})
-    }
-
-    handleSubmit(event) {
-        event.preventDefault();
-        const form = event.target;
-        const data = {"title": null, "users": [], "repository_link": null}
-        for (let item of form.children) {
-            if (item.name in data && item.name !== "users"){
-                data[item.name] = item.value
-            } else if (item.name === "users") {
-                data[item.name].push(Number.parseInt(item.value))
+                App.create_project(data);
             }
-        }
-        this.props.get_new_project(data);
-    }
+        }>
+            <input className={"formInput"} type={"text"} name={"title"} placeholder={"input title"}/>
+            <select className={"formSelect"} name={"users"} multiple={true}>
+                {App.state.users.map((user) => <option key={user.id} value={user.id}>{user.username}</option>)}
+            </select>
+            <input className={"formInput"} type={'url'} name={"repository_link"}/>
+            <button className={"button"} type={"submit"} form={"createProject"}>Create</button>
+        </form>
+    )
 
-    render() {
-        return (
-            <form id={"createProject"} onSubmit={(event) => this.handleSubmit(event)}>
-                <input type={"text"} name={"title"} placeholder={"input title"}/>
-                <select name={"users"} onScroll={(event) => {console.dir(event)}}>
-                    {this.state.users.map((user) => <option key={user.id} value={user.id}>{user.username}</option>)}
-                </select>
-                <input type={'url'} name={"repository_link"}/>
-                <button type={"submit"} form={"createProject"}>Create</button>
-            </form>
-        )
-    }
 }
-
 export default ProjectCreate;

@@ -27,7 +27,7 @@ const UsersList = ({App, users}) => {
     return (
             <div>
                 <div className={"paginator_box"}>
-                    <button onClick={() => {
+                    <button className={"button"} onClick={() => {
                         let page = App.state.users_page;
                         if (page > 1) {
                             App.setState({
@@ -36,7 +36,7 @@ const UsersList = ({App, users}) => {
                         }
                     }}>Previous</button>
                     <span className={"paginator"}>Page: {App.state.users_page} of {App.state.users_pages}</span>
-                    <button onClick={() => {
+                    <button className={"button"} onClick={() => {
                         let page = App.state.users_page;
                         let pages = App.state.users_pages;
                         let offset = App.state.users_offset;

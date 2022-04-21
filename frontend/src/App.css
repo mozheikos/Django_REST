@@ -103,7 +103,7 @@ td, th {
   justify-content: center;
 }
 
-.paginator_box button {
+.button {
   background-color: grey;
   padding: 5px 20px;
   border-radius: 5px;
@@ -112,9 +112,14 @@ td, th {
   box-shadow: 1px 1px 3px black;
   border-color: grey;
   cursor: pointer;
+  margin: 5px 10px;
 }
-.paginator_box button:active {
+.button:active {
   box-shadow: none;
+}
+.button a {
+  color: #FFFFFF;
+  text-decoration: none;
 }
 .login_box {
   display: flex;
@@ -149,4 +154,48 @@ td, th {
 }
 #login {
   margin: 50px auto;
+}
+.itemActions {
+  display: flex;
+  flex-direction: column;
+}
+.projectsFunc {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+#projectSearch {
+  margin-left: 20px;
+  line-height: 20px;
+}
+label {
+  font-weight: bold;
+}
+#createProject {
+  display: flex;
+  flex-direction: column;
+  min-height: 70vh;
+}
+#updateProject {
+  display: flex;
+  flex-direction: column;
+  min-height: 70vh;
+}
+#createRemark {
+  display: flex;
+  flex-direction: column;
+  min-height: 70vh;
+}
+.formInput {
+  margin: 0 0 15px 0;
+  width: 40vw;
+  line-height: 2em;
+}
+.formSelect {
+  height: 200px;
+  margin-bottom: 15px;
+}
+.formSingleSelect {
+  margin-bottom: 15px;
 }

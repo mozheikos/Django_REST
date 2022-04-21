@@ -18,8 +18,11 @@ const Remark = ({App, remark, users}) => {
                 <span>{remark.status}</span>
             </td>
             {<td className="column">
-                {App.is_authenticated() ? <button onClick={() => {App.delete_remark(remark.id)}}>delete remark</button>
-                                        : <button disabled={true}>delete remark</button>}
+                {App.is_authenticated() ? <div>
+                        <button className={"button"} onClick={() => {App.delete_remark(remark.id)}}>delete remark</button>
+
+                    </div>
+                                        : <div>Login to advanced</div>}
             </td>}
         </tr>
     );
@@ -39,7 +42,7 @@ const Remarks = ({App, remarks, users}) => {
     return (
         <div>
             <div className={"paginator_box"}>
-                <button onClick={() => {
+                <button className={"button"} onClick={() => {
                     let page = App.state.remarks_page;
                     if (page > 1) {
                         App.setState({
@@ -48,7 +51,7 @@ const Remarks = ({App, remarks, users}) => {
                     }
                 }}>Previous</button>
                 <span className={"paginator"}>Page: {App.state.remarks_page} of {App.state.remarks_pages}</span>
-                <button onClick={() => {
+                <button className={"button"} onClick={() => {
                     let page = App.state.remarks_page;
                     let pages = App.state.remarks_pages;
                     let offset = App.state.remarks_offset;
@@ -65,7 +68,7 @@ const Remarks = ({App, remarks, users}) => {
                     }
                 }}>Next</button>
             </div>
-            <Link to={"/ToDo/create"}>Create remark</Link>
+            <button className={"button"} ><Link to={"/ToDo/create"}>Create remark</Link></button>
             <table className='inner_table container'>
                 <th className="column">
                     <span>User</span>

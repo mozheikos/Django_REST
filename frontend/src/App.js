@@ -10,6 +10,7 @@ import UserDetail from "./components/UserDetail";
 import LoginButton from "./components/LoginButton";
 import LoginComponent from "./components/LoginComponent";
 import ProjectCreate from "./components/ProjectCreate";
+import ProjectUpdate from "./components/ProjectUpdate";
 import {BrowserRouter, Route, Redirect} from "react-router-dom";
 import axios from 'axios';
 import Cookies from "universal-cookie/es6";
@@ -53,11 +54,11 @@ class App extends React.Component {
             headers = this.get_headers()
         }
         axios.get(
-            `http://127.0.0.1:8000/api/users/?offset=0&limit=${this.state.users_limit}`,
+            `http://127.0.0.1:8000/api/users/`,
             {headers}).then(
             response => {
-                const users = response.data.results;
-                const pages = Math.ceil(response.data.count / this.state.users_limit);
+                const users = response.data;
+                const pages = Math.ceil(response.data.length / this.state.users_limit);
                 this.setState(
                     {
                         'users': users,
@@ -157,23 +158,23 @@ class App extends React.Component {
         if (this.is_authenticated()){
             headers = this.get_headers();
         }
-        if (prevState.users_offset < this.state.users_offset) {
-            axios.get(
-                `http://127.0.0.1:8000/api/users/?offset=${this.state.users_offset}&limit=${this.state.users_limit}`,
-                {headers}).then(response => {
-                const users = this.state.users;
-                users.push(...response.data.results)
-                this.setState(
-                    {
-                        'users': users
-                    }
-                );
-            }).catch(
-                error => {
-                    console.log(error);
-                }
-            );
-        }
+        // if (prevState.users_offset < this.state.users_offset) {
+        //     axios.get(
+        //         `http://127.0.0.1:8000/api/users/?offset=${this.state.users_offset}&limit=${this.state.users_limit}`,
+        //         {headers}).then(response => {
+        //         const users = this.state.users;
+        //         users.push(...response.data.results)
+        //         this.setState(
+        //             {
+        //                 'users': users
+        //             }
+        //         );
+        //     }).catch(
+        //         error => {
+        //             console.log(error);
+        //         }
+        //     );
+        // }
         if (prevState.projects_offset < this.state.projects_offset) {
             axios.get(
                 `http://127.0.0.1:8000/api/projects/?offset=${this.state.projects_offset}&limit=${this.state.projects_limit}`,
@@ -331,7 +332,6 @@ class App extends React.Component {
     }
 
     find_project(name) {
-        console.log(name);
         this.setState({
             'projects_page': 1,
             'projects_pages': null,
@@ -351,6 +351,24 @@ class App extends React.Component {
               );
             }
         ).catch(error => console.log(error))
+    }
+
+    update_project(id, data) {
+        const headers = this.get_headers();
+        axios.put(`http://localhost:8000/api/projects/${id}/`, data, {headers}
+        ).then(
+            response => {
+                let new_project = response.data;
+                let projects = this.state.projects;
+                let idx = projects.findIndex(project => project.id === new_project.id);
+                projects.splice(idx, 1, new_project)
+                this.setState({
+                    "projects": projects
+                })
+            }
+        ).catch(
+            error => console.log(error)
+        )
     }
 
     create_remark(data) {
@@ -378,15 +396,19 @@ class App extends React.Component {
         axios.delete(`http://127.0.0.1:8000/api/ToDo/${id}/`, {headers}
         ).then(
             response => {
-                let idx = null;
-                for (let i in this.state.remarks) {
-                    if (this.state.remarks[i].id === response.data.id) {
-                        idx = i;
-                        break
+                this.setState({
+                    "remarks": [],
+                });
+                axios.get(`http://127.0.0.1:8000/api/ToDo/?offset=0&limit=${this.state.remarks_limit * this.state.remarks_pages}`
+                ).then(
+                    response => {
+                        this.setState({
+                            "remarks": response.data.results
+                        })
                     }
-                }
-                const remarks = this.state.remarks;
-                remarks[idx] = response.data;
+                ).catch(
+                    error => console.log(error)
+                )
             }
         ).catch(error => console.log(error))
     }
@@ -404,7 +426,10 @@ class App extends React.Component {
                         this.is_authenticated() ? < Projects App={this} projects={this.state.projects} users={this.state.users}/>
                                                 : <LoginComponent get_token={(username, password) => this.set_credentials(username, password)}/>}/>
                     <Route exact path={"/project/create"} component={() =>
-                        this.is_authenticated() ? <ProjectCreate get_new_project={(data) => this.create_project(data)} />
+                        this.is_authenticated() ? <ProjectCreate App={this} />
+                                                : <LoginComponent get_token={(username, password) => this.set_credentials(username, password)}/>}/>
+                    <Route path={"/project/update/:id"} component={() =>
+                        this.is_authenticated() ? <ProjectUpdate App={this} />
                                                 : <LoginComponent get_token={(username, password) => this.set_credentials(username, password)}/>}/>
                     <Route path={"/projects/:id"}>
                             < ProjectDetail projects={this.state.projects} users={this.state.users}/>
@@ -417,8 +442,8 @@ class App extends React.Component {
                         < Remarks App={this} remarks={this.state.remarks} users={this.state.users}/>
                     </Route>
                     <Route exact path={"/ToDo/create"} component={() =>
-                        this.is_authenticated() ? <ToDOCreate get_new_remark={(data) => this.create_remark(data)} user={this.state.user}/>
-                                                : <Forbidden/>}/>
+                        this.is_authenticated() ? <ToDOCreate App={this}/>
+                                                : <LoginComponent get_token={(username, password) => this.set_credentials(username, password)}/>}/>
                 </BrowserRouter>
                     < FooterInfo />
             </div>
