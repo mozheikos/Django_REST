@@ -1,8 +1,9 @@
 import React from "react";
-import {Link, Redirect} from "react-router-dom";
+import {Link} from "react-router-dom";
+import ProjectSearch from "./ProjectSearch";
 
 
-const Project = ({project, users}) => {
+const Project = ({App, project, users}) => {
     let users_list = users.filter((user) => project.users.includes(user.id));
     return (
         <tr className="row">
@@ -15,6 +16,13 @@ const Project = ({project, users}) => {
             <td className="column">
                 {users_list.map((user) => <div key={user.id}>{user.username}</div>)}
             </td>
+            {<td className="column">
+                {App.is_authenticated() ? <div className={"itemActions"} >
+                        <button className={"button"} onClick={() => {App.delete_project(project.id)}}>Delete project</button>
+                        <button className={"button"}><Link to={`/project/update/${project.id}`}>Edit project</Link></button>
+                    </div>
+                                        : <div>Login to advanced</div>}
+            </td>}
         </tr>
     );
 }
@@ -26,7 +34,7 @@ const Projects = ({App, projects, users}) => {
     return (
         <div>
             <div className={"paginator_box"}>
-                <button onClick={() => {
+                <button className={"button"} onClick={() => {
                     let page = App.state.projects_page;
                     if (page > 1) {
                         App.setState({
@@ -35,7 +43,7 @@ const Projects = ({App, projects, users}) => {
                     }
                 }}>Previous</button>
                 <span className={"paginator"}>Page: {App.state.projects_page} of {App.state.projects_pages}</span>
-                <button onClick={() => {
+                <button className={"button"} onClick={() => {
                     let page = App.state.projects_page;
                     let pages = App.state.projects_pages;
                     let offset = App.state.projects_offset;
@@ -52,6 +60,10 @@ const Projects = ({App, projects, users}) => {
                     }
                 }}>Next</button>
             </div>
+            <div className={"projectsFunc"}>
+                <ProjectSearch App={App}/>
+                <button className={"button"}><Link to={"/project/create"} >Create project</Link></button>
+            </div>
             <table className='inner_table container'>
                 <th className="column">
                     <span>Title</span>
@@ -62,7 +74,10 @@ const Projects = ({App, projects, users}) => {
                 <th className="column">
                     <span>Users</span>
                 </th>
-                {projects.map((project) => <Project key={project.id} project={project} users={users}/>)}
+                <th className="column">
+                    <span>Actions</span>
+                </th>
+                {projects.map((project) => <Project key={project.id} App={App} project={project} users={users}/>)}
             </table>
         </div>
 );

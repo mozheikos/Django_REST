@@ -3,7 +3,7 @@ import {useParams} from "react-router-dom";
 
 const UserProject = ({project}) => {
     return (
-        <div>{project.title}</div>
+        <div>{project}</div>
     )
 }
 
@@ -19,6 +19,7 @@ const UserDetail = ({users, projects}) => {
         )
     }
     let user = users.find(user => user.id === id);
+    console.dir(user);
     let superUser = user.isSuperuser ? "yes" : "no";
     return (
         <table className='inner_table container'>

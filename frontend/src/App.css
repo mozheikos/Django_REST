@@ -44,15 +44,21 @@
   align-items: center;
 }
 .inner_table {
-  border: 1px solid black;
   border-collapse: collapse;
 }
 td, th {
   font-size: 16px;
   line-height: 30px;
-  border: 1px solid black;
   text-align: center;
 }
+tr:nth-child(2n) {
+  background-color: rgba(100, 100, 100 , 0.3);
+}
+th {
+  background-color: rgba(100, 100, 100 , 0.5);
+  /*border: 1px solid black;*/
+}
+
 .container {
   width: 80vw;
 }
@@ -103,7 +109,7 @@ td, th {
   justify-content: center;
 }
 
-.paginator_box button {
+.button {
   background-color: grey;
   padding: 5px 20px;
   border-radius: 5px;
@@ -112,9 +118,14 @@ td, th {
   box-shadow: 1px 1px 3px black;
   border-color: grey;
   cursor: pointer;
+  margin: 5px 10px;
 }
-.paginator_box button:active {
+.button:active {
   box-shadow: none;
+}
+.button a {
+  color: #FFFFFF;
+  text-decoration: none;
 }
 .login_box {
   display: flex;
@@ -140,8 +151,9 @@ td, th {
   box-shadow: 1px 1px 2px black;
   font-size: 14px;
 }
-.label {
+label {
   font-size: 18px;
+  font-weight: bold;
 }
 .input {
   margin: 0 15px;
@@ -149,4 +161,46 @@ td, th {
 }
 #login {
   margin: 50px auto;
+}
+.itemActions {
+  display: flex;
+  flex-direction: column;
+}
+.projectsFunc {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+#projectSearch {
+  margin-left: 20px;
+  line-height: 20px;
+}
+
+#createProject {
+  display: flex;
+  flex-direction: column;
+  min-height: 70vh;
+}
+#updateProject {
+  display: flex;
+  flex-direction: column;
+  min-height: 70vh;
+}
+#createRemark {
+  display: flex;
+  flex-direction: column;
+  min-height: 70vh;
+}
+.formInput {
+  margin: 0 0 15px 0;
+  width: 40vw;
+  line-height: 2em;
+}
+.formSelect {
+  height: 200px;
+  margin-bottom: 15px;
+}
+.formSingleSelect {
+  margin-bottom: 15px;
 }

@@ -17,7 +17,7 @@ class UserModelViewSet(
 ):
 
     queryset = User.objects.all()
-    pagination_class = LimitOffsetPagination
+    # pagination_class = LimitOffsetPagination
 
     def get_serializer_class(self):
         # if self.basename == 'v1': # В другом варианте раскомментировать

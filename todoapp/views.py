@@ -6,6 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 from todoapp.filters import ProjectFilter, ToDoFilter
 from django_filters import rest_framework as filters
 from todoapp.paginators import ProjectListPagination, ToDOListPagination
+from usersapp.models import User
 
 
 class ProjectModelViewSet(ModelViewSet):
@@ -14,7 +15,7 @@ class ProjectModelViewSet(ModelViewSet):
     pagination_class = ProjectListPagination
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = ProjectFilter
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def update(self, request, pk=None, *args, **kwargs):
         return super(ProjectModelViewSet, self).update(request=request, pk=pk, partial=True, *args, **kwargs)
@@ -26,6 +27,14 @@ class ToDoModelViewSet(ModelViewSet):
     pagination_class = ToDOListPagination
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ToDoFilter
+
+    def create(self, request, *args, **kwargs):
+        project = Project.objects.get(pk=int(request.data["project"]))
+        user = User.objects.get(pk=int(request.data["user"]))
+        obj = ToDo.objects.create(user=user, project=project, text=request.data["text"])
+        obj.save()
+        serializer = ToDoModelSerializer(obj, context={"request": request})
+        return Response(data=serializer.data)
 
     def update(self, request, pk=None, *args, **kwargs):
         return super(ToDoModelViewSet, self).update(request=request, pk=pk, partial=True, *args, **kwargs)

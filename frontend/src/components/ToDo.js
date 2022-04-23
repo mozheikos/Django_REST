@@ -1,6 +1,7 @@
 import React from "react";
+import {Link} from "react-router-dom";
 
-const Remark = ({remark, users}) => {
+const Remark = ({App, remark, users}) => {
     let user = users.find(user => user.username === remark.user)
     return (
         <tr className="row">
@@ -16,6 +17,13 @@ const Remark = ({remark, users}) => {
             <td className="column">
                 <span>{remark.status}</span>
             </td>
+            {<td className="column">
+                {App.is_authenticated() ? <div>
+                        <button className={"button"} onClick={() => {App.delete_remark(remark.id)}}>delete remark</button>
+
+                    </div>
+                                        : <div>Login to advanced</div>}
+            </td>}
         </tr>
     );
 }
@@ -34,7 +42,7 @@ const Remarks = ({App, remarks, users}) => {
     return (
         <div>
             <div className={"paginator_box"}>
-                <button onClick={() => {
+                <button className={"button"} onClick={() => {
                     let page = App.state.remarks_page;
                     if (page > 1) {
                         App.setState({
@@ -43,7 +51,7 @@ const Remarks = ({App, remarks, users}) => {
                     }
                 }}>Previous</button>
                 <span className={"paginator"}>Page: {App.state.remarks_page} of {App.state.remarks_pages}</span>
-                <button onClick={() => {
+                <button className={"button"} onClick={() => {
                     let page = App.state.remarks_page;
                     let pages = App.state.remarks_pages;
                     let offset = App.state.remarks_offset;
@@ -60,6 +68,7 @@ const Remarks = ({App, remarks, users}) => {
                     }
                 }}>Next</button>
             </div>
+            <button className={"button"} ><Link to={"/ToDo/create"}>Create remark</Link></button>
             <table className='inner_table container'>
                 <th className="column">
                     <span>User</span>
@@ -73,7 +82,10 @@ const Remarks = ({App, remarks, users}) => {
                 <th className="column">
                     <span>Status</span>
                 </th>
-                {remarks.map((remark) => <Remark key={remark.id} remark={remark} users={users}/>)}
+                <th className="column">
+                    <span>Actions</span>
+                </th>
+                {remarks.map((remark) => <Remark App={App} remark={remark} users={users}/>)}
             </table>
         </div>
     );
